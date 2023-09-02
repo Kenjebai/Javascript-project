@@ -55,17 +55,14 @@ autoTab(index)
 const som = document.querySelector('#som')
 const usd = document.querySelector('#usd')
 const eur = document.querySelector('#eur')
+const url = "../data/converter.json"
 
-const converter = (element, target, target2, isTrue) => {
-    element.oninput = () => {
-        const request = new XMLHttpRequest()
-        request.open("GET", "../data/converter.json")
-        request.setRequestHeader("Content-type", "application/json")
-        request.send()
-
-        request.onload = () => {
-            const response = JSON.parse(request.response)
-
+const converter = async (element, target, target2, isTrue) => {
+    element.oninput = async () => {
+        try {
+            const response2 = await fetch(url)
+            const response = await response2.json();
+        
             switch(isTrue){
                 case 'som':
                     target.value = (element.value / response.usd).toFixed(2)
@@ -81,9 +78,12 @@ const converter = (element, target, target2, isTrue) => {
             }
             element.value === '' && (target.value = '')
             element.value === '' && (target2.value = '')
+        } catch (error) {
+            console.error('ERROR');
+        }
         }
     }
-}
+// }
 
 converter(som, usd, eur, 'som')
 converter(usd, som, eur, 'usd')
@@ -96,17 +96,20 @@ const btnPrev = document.querySelector('#btn-prev')
 const btnNext = document.querySelector('#btn-next')
 let count = 1
 
-const fetchFunc = () => {
-    fetch(`https://jsonplaceholder.typicode.com/todos/${count}`)
-        .then(response => response.json())
-        .then(data => {
-            card.innerHTML = `
-                <p>${data.title}</p>
-                <p style="color: ${data.completed ? 'green' : 'red'}">${data.completed}</p>
-                <span>${data.id}</span>
-            `
-        })
+const fetchFunc = async () => {
+    try {
+        const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${count}`)
+        const data = await response.json()
+        card.innerHTML = `
+                     <p>${data.title}</p>
+                     <p style="color: ${data.completed ? 'green' : 'red'}">${data.completed}</p>
+                     <span>${data.id}</span>
+                 `
+    } catch (error) {
+        console.error('ERROR');   
+    }
 }
+
 const next = () => {
     count++
     if(count > 200){
@@ -129,8 +132,15 @@ btnPrev.onclick = () => {
     prev()
 }
 
-// 2-дз
+//2-дз
 
-fetch(`https://jsonplaceholder.typicode.com/posts`)
-    .then(response => response.json())
-    .then(data => console.log(data))
+const asyncAwait = async () => {
+    try {
+        const response = await fetch(`https://jsonplaceholder.typicode.com/posts`)
+        const data = await response.json()
+        console.log(data);
+    } catch (error) {
+        console.error('error');
+    }
+}
+asyncAwait()
