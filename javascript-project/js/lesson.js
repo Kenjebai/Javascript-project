@@ -144,3 +144,25 @@ const asyncAwait = async () => {
     }
 }
 asyncAwait()
+
+// WEATHER
+
+//DOM
+const cityName = document.querySelector('.cityName')
+const citySpan = document.querySelector('.city')
+const tempSpan = document.querySelector('.temp')
+
+//API
+
+const baseUrl = 'http://api.openweathermap.org/data/2.5/weather'
+const apiKey = 'e417df62e04d3b1b111abeab19cea714'
+
+cityName.oninput = (event) => {
+    fetch(`${baseUrl}?q=${event.target.value}&appid=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            citySpan.innerHTML = data?.name ? data?.name : 'Город не найден'
+            tempSpan.innerHTML = data?.main?.temp ? Math.round(data?.main?.temp - 273) + '&deg;C' : '...'
+        })
+
+}
